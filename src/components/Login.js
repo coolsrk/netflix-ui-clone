@@ -6,11 +6,14 @@ const Login = () => {
   const [isSignInForm, setToggleSignup] = useState([true]);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const email = useRef('');
-  const password = useRef('');
+  const email = useRef("");
+  const password = useRef("");
 
   const handleSubmit = () => {
-    const message = validateSignInForm(email.current.value, password.current.value);
+    const message = validateSignInForm(
+      email.current.value,
+      password.current.value
+    );
     if (message) {
       setErrorMessage(message);
     }
@@ -39,7 +42,10 @@ const Login = () => {
           "
         style={{ width: "400px" }}
       >
-        <form onSubmit={(e) => e.preventDefault()} className="m-auto text-white w-auto">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="m-auto text-white w-auto"
+        >
           <div className="w-full flex-col justify-center items-center space-y-5">
             <h1 className="p-2 text-4xl font-bold">
               {!isSignInForm ? "Sign Up" : "Sign In"}
@@ -56,6 +62,17 @@ const Login = () => {
               "
                   type="text"
                   placeholder="Full Name"
+                />
+
+                <input
+                  className="p-4 w-full 
+              border-gray-400
+              border-textBoxes rounded-md  
+              bg-opacity-10
+              bg-black
+              "
+                  type="text"
+                  placeholder="Nick Name"
                 />
 
                 <input
@@ -89,9 +106,12 @@ const Login = () => {
               ref={password}
             />
 
-            <p className="text-red-500">{errorMessage ? errorMessage : ''}</p>  
+            <p className="text-red-500">{errorMessage ? errorMessage : ""}</p>
 
-            <button onClick ={handleSubmit} className="p-2  bg-signInRed w-full rounded-md">
+            <button
+              onClick={handleSubmit}
+              className="p-2  bg-signInRed w-full rounded-md"
+            >
               {!isSignInForm ? "Sign Up" : "Sign In"}
             </button>
             {isSignInForm && <div className="">Forgot password?</div>}
