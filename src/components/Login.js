@@ -16,6 +16,10 @@ const Login = () => {
     );
     if (message) {
       setErrorMessage(message);
+    }else {
+      setErrorMessage(null);
+      email.current.value = "";
+      password.current.value = "";
     }
   };
 
