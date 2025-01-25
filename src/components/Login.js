@@ -29,6 +29,7 @@ const Login = () => {
       <div className="absolute">
         <img
           className="h-fit snap-none fixed"
+          alt = "background"
           src="resources/media/photos/background-main-page.jpg"
         ></img>
       </div>
