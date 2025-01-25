@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import { validateSignInForm } from "../util/validate";
 
 const Login = () => {
   const [isSignInForm, setToggleSignup] = useState([true]);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const email = useRef('');
+  const password = useRef('');
+
+  const handleSubmit = () => {
+    const message = validateSignInForm(email.current.value, password.current.value);
+    if (message) {
+      setErrorMessage(message);
+    }
+  };
 
   const toggleSignup = () => {
     setToggleSignup(!isSignInForm);
@@ -13,19 +25,21 @@ const Login = () => {
       <Header />
       <div className="absolute">
         <img
-          className="h-fit"
+          className="h-fit snap-none fixed"
           src="resources/media/photos/background-main-page.jpg"
         ></img>
       </div>
 
       <div
         className="relative
-         bg-black bg-opacity-90
+         bg-black bg-opacity-80
          p-12 top-52 
-          mx-auto left-0 right-0"
+          mx-auto left-0 right-0
+          rounded-lg
+          "
         style={{ width: "400px" }}
       >
-        <form className="m-auto text-white w-auto">
+        <form onSubmit={(e) => e.preventDefault()} className="m-auto text-white w-auto">
           <div className="w-full flex-col justify-center items-center space-y-5">
             <h1 className="p-2 text-4xl font-bold">
               {!isSignInForm ? "Sign Up" : "Sign In"}
@@ -35,16 +49,18 @@ const Login = () => {
               <>
                 <input
                   className="p-4 w-full 
-              border-gray-400 bg-black 
+              border-gray-400
               border-textBoxes rounded-md  
-              bg-opacity-10"
+              bg-opacity-10
+              bg-black
+              "
                   type="text"
                   placeholder="Full Name"
                 />
 
                 <input
                   className="p-4  w-full 
-              border-gray-400 bg-black 
+              border-gray-400 bg-black
               border-textBoxes rounded-md  
               bg-opacity-10"
                   type="text"
@@ -60,6 +76,7 @@ const Login = () => {
               bg-opacity-10"
               type="text"
               placeholder="Email"
+              ref={email}
             />
 
             <input
@@ -67,11 +84,14 @@ const Login = () => {
               border-gray-400 bg-black 
               border-textBoxes rounded-md  
               bg-opacity-10"
-              type="text"
+              type="password"
               placeholder="Password"
+              ref={password}
             />
 
-            <button className="p-2  bg-signInRed w-full rounded-md">
+            <p className="text-red-500">{errorMessage ? errorMessage : ''}</p>  
+
+            <button onClick ={handleSubmit} className="p-2  bg-signInRed w-full rounded-md">
               {!isSignInForm ? "Sign Up" : "Sign In"}
             </button>
             {isSignInForm && <div className="">Forgot password?</div>}

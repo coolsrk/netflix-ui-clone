@@ -4,7 +4,7 @@ import Browse from './Browse';
 import { RouterProvider } from 'react-router-dom';
 import Login from './Login';
 
-const Body = () => {
+const Routes = () => {
 
    const appRouter = createBrowserRouter([
     {
@@ -24,4 +24,4 @@ const Body = () => {
   )
 }
 
-export default Body
+export default Routes;

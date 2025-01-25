@@ -1,9 +1,9 @@
-import Body from "./components/Body";
+import Routes from "./components/Routes";
 
 function App() {
   return (
     <div className="bg-black">
-      <Body/>
+      <Routes/>
     </div>
   );
 }
