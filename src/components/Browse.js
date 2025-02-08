@@ -1,8 +1,9 @@
 import React from 'react'
+import Header from './Header'
 
 const Browse = () => {
   return (
-    <div style={{color: 'white'}}>Inside Browse</div>
+    <Header/>
   )
 }
 

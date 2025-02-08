@@ -1,0 +1,96 @@
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require("cors");
+const helmet = require('helmet');    
+const CommanApiController = require("./controllers/CommanApi/CommanApi.Controller")
+const SchedularController = require('./controllers/Schedular/Schedular.Controller');
+const fileUpload = require('express-fileupload');
+const path = require('path');
+const { GCT } = require('./middleware/Utils');
+const app = express();
+const cron = require('node-cron');
+const sql = require("./Config/database");
+const { default: axios } = require("axios");
+const { GCDT, DateToISO, GCD, BIO_API_URL, BIO_SERVICE_URL, GetBiometricApiKey  } = require("./middleware/Utils");
+const PORT = process.env.PORT || 8100; // Use environment variable for port
+
+app.use(cors({
+  origin: 'https://ramp4.ndforce.com', // Allow only this frontend
+  methods: 'GET,POST,PUT,DELETE,OPTIONS', // Allowed methods
+  allowedHeaders: 'Content-Type,Authorization', // Allowed headers
+  credentials: true // Allow cookies if needed
+}));
+
+app.options('*', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "https://ramp4.ndforce.com");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(200); // Respond OK to preflight requests
+});
+
+// OR, allow all origins (not recommended for production)
+app.use(cors());
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '1000mb' }));
+
+// let corsOptions = {
+	// origin : ['https://ramp4.ndforce.com']
+// }
+
+// app.use(cors(corsOptions));
+
+// app.use(
+  // cors({
+    // origin: "*", // Your frontend URL
+    // methods: "GET, POST, PUT, DELETE", // Allowed HTTP methods
+    // allowedHeaders: "*", // Allowed headers
+  // })
+// );
+
+// app.use(cors({
+    // origin: '',
+    // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    // allowedHeaders: ['Content-Type', 'Authorization'],
+    // credentials: true // Allow credentials
+// }));
+
+
+// app.use("*", (req, res) => {
+  // res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  // res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  // res.header("Access-Control-Allow-Credentials", "true");
+  // res.sendStatus(200);
+// });
+
+
+
+app.use('/Storage', express.static(path.join(__dirname, 'public/Storage')));
+
+// app.use((req, res, next) => {
+    // next();
+// });
+
+
+
+//Handle preflight requests
+ // app.options('*', cors());
+
+app.use('/api', require('./routes/AssignedIpsRoutes'));
+
+
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
+//app.use(helmet());
+
+//Cross-Site Scripting (XSS) Protection
+app.use(helmet.xssFilter());
+app.use(helmet.noSniff());
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

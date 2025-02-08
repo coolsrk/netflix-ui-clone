@@ -1,10 +1,17 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { validateSignInForm } from "../util/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../firebase/initialise";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isSignInForm, setToggleSignup] = useState([true]);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
   const email = useRef("");
   const password = useRef("");
@@ -16,10 +23,57 @@ const Login = () => {
     );
     if (message) {
       setErrorMessage(message);
-    }else {
-      setErrorMessage(null);
-      email.current.value = "";
-      password.current.value = "";
+      return;
+    }
+    setErrorMessage(null);
+
+    // Handle sign up
+    if (!isSignInForm) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error(errorMessage);
+          setErrorMessage(errorCode + ": " + errorMessage);
+          navigate("/");
+        })
+        .finally(() => {
+          email.current.value = "";
+          password.current.value = "";
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error(errorMessage);
+          setErrorMessage(errorCode + ": " + errorMessage);
+          navigate("/");
+        })
+        .finally(() => {
+          email.current.value = "";
+          password.current.value = "";
+        });
     }
   };
 
@@ -30,10 +84,11 @@ const Login = () => {
   return (
     <div>
       <Header />
-      <div className="absolute">
+      <div className="fixed">
         <img
-          className="h-fit snap-none fixed"
-          alt = "background"
+          className="snap-none object-cover"
+          style={{ height: "100vh", width: "100vw" }}
+          alt="background"
           src="resources/media/photos/background-main-page.jpg"
         ></img>
       </div>
