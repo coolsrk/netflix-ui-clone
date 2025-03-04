@@ -1,10 +1,23 @@
-import React from 'react'
-import Header from './Header'
+import React, { useEffect } from "react";
+import Header from "./Header";
+import * as constants from "../constants/constants";
 
 const Browse = () => {
-  return (
-    <Header/>
-  )
-}
+  const fetchData = async () => {
+    const response = await fetch(
+      constants.NOW_PLAYING_URL,
+      constants.API_OPTIONS
+    );
 
-export default Browse
+    const data = await response.json();
+    console.log(data.results);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return <Header />;
+};
+
+export default Browse;

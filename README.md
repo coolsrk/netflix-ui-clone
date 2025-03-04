@@ -9,6 +9,9 @@ This is the repo for Netflix UI clone. This one would be containing all the reac
         - Logo
         - Sign In button
     - Sign Up form
+    - Sign In Form
+    - Adding user object returned by firebase to Redux store
+    - Bug Fix: Added feature to navigate to /browse page if user is signed in otherwise navigate to '/' page.
 - Browse 
     - Movies 
     - Horizontal scrolling movie list
@@ -17,3 +20,13 @@ This is the repo for Netflix UI clone. This one would be containing all the reac
     - For searched movie or item it should play trailer in the back ground.
 - Search 
     - Smart search using Chat GPT APIs.
+
+
+# Good Practices 
+
+- Handling *onAuthStateChanged()* from Header component:- 
+    - Because of useEffect(() => {...}, []) it would call evertime my component loads which would add listener for onAuthStateChanged.
+    - But when our component gets unmounted it remains there, it does not get removed. 
+    - This happens whenever our Header component renders.
+    - To tackle that, we have to clean up the useEffect() so return function at the end inside useEffect().
+    - Known as 'unsubscribe' to an action.

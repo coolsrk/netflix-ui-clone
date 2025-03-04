@@ -4,82 +4,67 @@ import { validateSignInForm } from "../util/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../firebase/initialise";
-import { useNavigate } from "react-router-dom";
+import { addUser } from "../redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const [isSignInForm, setToggleSignup] = useState([true]);
+  // State to toggle between Sign In and Sign Up forms
+  const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const email = useRef("");
-  const password = useRef("");
+  // Refs for form inputs
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+  const fullNameRef = useRef("");
 
-  const handleSubmit = () => {
-    const message = validateSignInForm(
-      email.current.value,
-      password.current.value
-    );
-    if (message) {
-      setErrorMessage(message);
+  // Function to handle form submission for Sign In and Sign Up
+  const handleSubmit = async () => {
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const fullName = fullNameRef.current.value;
+
+    // Validate the form fields
+    const validationError = validateSignInForm(email, password);
+    if (validationError) {
+      setErrorMessage(validationError);
       return;
     }
     setErrorMessage(null);
 
-    // Handle sign up
-    if (!isSignInForm) {
-      createUserWithEmailAndPassword(
-        auth,
-        email.current.value,
-        password.current.value
-      )
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log(user);
-          navigate("/browse");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error(errorMessage);
-          setErrorMessage(errorCode + ": " + errorMessage);
-          navigate("/");
-        })
-        .finally(() => {
-          email.current.value = "";
-          password.current.value = "";
-        });
-    } else {
-      signInWithEmailAndPassword(
-        auth,
-        email.current.value,
-        password.current.value
-      )
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log(user);
-          navigate("/browse");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error(errorMessage);
-          setErrorMessage(errorCode + ": " + errorMessage);
-          navigate("/");
-        })
-        .finally(() => {
-          email.current.value = "";
-          password.current.value = "";
-        });
+    try {
+      if (!isSignInForm) {
+        // Handle user registration (Sign Up)
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        
+        // Update user profile with full name
+        await updateProfile(user, { displayName: fullName });
+        
+        // Updated user details can be found inside auth.currentUser object
+        const currentUser = auth.currentUser;
+        // Dispatch user details to Redux store
+        dispatch(addUser({ uid: currentUser.uid, email: currentUser.email, displayName: currentUser.displayName }));
+      } else {
+        // Handle user authentication (Sign In)
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log(userCredential.user);
+      }
+    } catch (error) {
+      setErrorMessage(`${error.code}: ${error.message}`);
+    } finally {
+      // Clear input fields after submission
+      emailRef.current.value = "";
+      passwordRef.current.value = "";
+      if (!isSignInForm) fullNameRef.current.value = "";
     }
   };
 
-  const toggleSignup = () => {
-    setToggleSignup(!isSignInForm);
-  };
+  // Function to toggle between Sign In and Sign Up modes
+  const toggleFormType = () => setIsSignInForm((prev) => !prev);
 
   return (
     <div>
@@ -90,96 +75,54 @@ const Login = () => {
           style={{ height: "100vh", width: "100vw" }}
           alt="background"
           src="resources/media/photos/background-main-page.jpg"
-        ></img>
+        />
       </div>
 
-      <div
-        className="relative
-         bg-black bg-opacity-80
-         p-12 top-52 
-          mx-auto left-0 right-0
-          rounded-lg
-          "
-        style={{ width: "400px" }}
-      >
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className="m-auto text-white w-auto"
-        >
+      <div className="relative bg-black bg-opacity-80 p-12 top-52 mx-auto rounded-lg" style={{ width: "400px" }}>
+        <form onSubmit={(e) => e.preventDefault()} className="m-auto text-white w-auto">
           <div className="w-full flex-col justify-center items-center space-y-5">
-            <h1 className="p-2 text-4xl font-bold">
-              {!isSignInForm ? "Sign Up" : "Sign In"}
-            </h1>
+            <h1 className="p-2 text-4xl font-bold">{isSignInForm ? "Sign In" : "Sign Up"}</h1>
 
+            {/* Full Name input for Sign Up only */}
             {!isSignInForm && (
-              <>
-                <input
-                  className="p-4 w-full 
-              border-gray-400
-              border-textBoxes rounded-md  
-              bg-opacity-10
-              bg-black
-              "
-                  type="text"
-                  placeholder="Full Name"
-                />
-
-                <input
-                  className="p-4 w-full 
-              border-gray-400
-              border-textBoxes rounded-md  
-              bg-opacity-10
-              bg-black
-              "
-                  type="text"
-                  placeholder="Nick Name"
-                />
-
-                <input
-                  className="p-4  w-full 
-              border-gray-400 bg-black
-              border-textBoxes rounded-md  
-              bg-opacity-10"
-                  type="text"
-                  placeholder="Mobile No."
-                />
-              </>
+              <input
+                className="p-4 w-full border-gray-400 border-textBoxes rounded-md bg-opacity-10 bg-black"
+                type="text"
+                placeholder="Full Name"
+                ref={fullNameRef}
+              />
             )}
 
+            {/* Email Input */}
             <input
-              className="p-4  w-full 
-              border-gray-400 bg-black 
-              border-textBoxes rounded-md  
-              bg-opacity-10"
-              type="text"
+              className="p-4 w-full border-gray-400 bg-black border-textBoxes rounded-md bg-opacity-10"
+              type="email"
               placeholder="Email"
-              ref={email}
+              ref={emailRef}
             />
 
+            {/* Password Input */}
             <input
-              className="p-4  w-full 
-              border-gray-400 bg-black 
-              border-textBoxes rounded-md  
-              bg-opacity-10"
+              className="p-4 w-full border-gray-400 bg-black border-textBoxes rounded-md bg-opacity-10"
               type="password"
               placeholder="Password"
-              ref={password}
+              ref={passwordRef}
             />
 
-            <p className="text-red-500">{errorMessage ? errorMessage : ""}</p>
+            {/* Error Message Display */}
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
-            <button
-              onClick={handleSubmit}
-              className="p-2  bg-signInRed w-full rounded-md"
-            >
-              {!isSignInForm ? "Sign Up" : "Sign In"}
+            {/* Submit Button */}
+            <button onClick={handleSubmit} className="p-2 bg-signInRed w-full rounded-md">
+              {isSignInForm ? "Sign In" : "Sign Up"}
             </button>
-            {isSignInForm && <div className="">Forgot password?</div>}
+            
+            {/* Forgot Password Option */}
+            {isSignInForm && <div>Forgot password?</div>}
 
-            <div className=" cursor-pointer" onClick={toggleSignup}>
-              {isSignInForm
-                ? "New to Netflix? Sign Up!"
-                : "Already a member? Sign In!"}
+            {/* Toggle between Sign In and Sign Up */}
+            <div className="cursor-pointer" onClick={toggleFormType}>
+              {isSignInForm ? "New to Netflix? Sign Up!" : "Already a member? Sign In!"}
             </div>
           </div>
         </form>
