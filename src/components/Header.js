@@ -5,6 +5,7 @@ import { signOut } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../redux/slices/userSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const Header = () => {
   /**
    * Use the useEffect hook to listen for authentication state changes
    * only once when the component is mounted.
-   * 
+   *
    * !
    * The reason we are using this inside Header component is because we want to check if the user is logged in or not
    * But it should happen inside components which comes under RouterProvider.
@@ -59,13 +60,12 @@ const Header = () => {
       {/**
        * If user is logged in, show the sign-out button
        */}
-      {currentUser && (
-        <div
-          className="absolute m-2 p-2 right-20 top-8 text-white cursor-pointer"
-          onClick={handleSignOut}
-        >
-          Sign-Out
-        </div>
+      {currentUser && (          
+          <div
+            className="absolute m-2 p-2 right-20 top-8 text-white cursor-pointer flex items-center gap-2">
+            <FontAwesomeIcon icon="circle-user" style={{ color: 'white'}} size="2x" />
+            <span onClick={handleSignOut}>Sign-Out</span>
+          </div>
       )}
     </div>
   );

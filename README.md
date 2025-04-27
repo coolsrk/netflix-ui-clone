@@ -18,9 +18,23 @@ This is the repo for Netflix UI clone. This one would be containing all the reac
     - Trailer after hovering
     - Search Box
     - For searched movie or item it should play trailer in the back ground.
+    - Design:- 
+        - Main Container
+            - Movie trailer in background
+            - Left middle, movie logo
+            - Below that movie description.
+        - Secondary Container
+            - Movie category * n
+                - Card * n
+                - On hover should show options 
 - Search 
     - Smart search using Chat GPT APIs.
 
+# Features used
+
+- Using TMDB api to get movies data. 
+    - Created new app on site and got auth token from there to hit apis.
+- 
 
 # Good Practices 
 
@@ -30,3 +44,8 @@ This is the repo for Netflix UI clone. This one would be containing all the reac
     - This happens whenever our Header component renders.
     - To tackle that, we have to clean up the useEffect() so return function at the end inside useEffect().
     - Known as 'unsubscribe' to an action.
+
+
+# Bug Fixes🐞
+
+ 

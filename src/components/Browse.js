@@ -1,23 +1,30 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Header from "./Header";
-import * as constants from "../constants/constants";
+import { useNowPlayingMovies } from "../hooks/useNowPlayingMovies";
+import MainContainer from "./home/MainContainer";
 
 const Browse = () => {
-  const fetchData = async () => {
-    const response = await fetch(
-      constants.NOW_PLAYING_URL,
-      constants.API_OPTIONS
-    );
+  // This is to fetch now playing movies and update the store.
+  useNowPlayingMovies();
 
-    const data = await response.json();
-    console.log(data.results);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return <Header />;
+  /**
+   *  Design :-
+   * - Header    
+   * - Main Container
+            - Movie trailer in background
+            - Left middle, movie logo
+            - Below that movie description.
+        - Secondary Container
+            - Movie category * n
+                - Card * n
+                - On hover should show options 
+   */
+  return (
+   <>
+     <Header />
+     <MainContainer/>
+   </> 
+);
 };
 
 export default Browse;
