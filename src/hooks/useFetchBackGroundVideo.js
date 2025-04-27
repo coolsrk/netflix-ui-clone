@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as constants from "../constants/constants";
 
 const useFetchBackGroundVideo = (movieId) => {
     const [trailerKey, setTrailerKey] = useState("");
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
-    const fetchMovieTrailer = async () => {
+    const fetchMovieTrailer = useCallback(async () => {
         const data = await fetch(
             constants.TRAILER_URL(movieId),
             constants.API_OPTIONS
@@ -20,7 +20,7 @@ const useFetchBackGroundVideo = (movieId) => {
         } else {
             console.error("No trailer found for this movie.");
         }
-    };
+    }, [movieId]);
 
     useEffect(() => {
         fetchMovieTrailer();
