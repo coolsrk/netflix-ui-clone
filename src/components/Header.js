@@ -45,7 +45,7 @@ const Header = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [dispatch, navigate]);
 
   return (
     // This is to make header overlap

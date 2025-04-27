@@ -1,6 +1,5 @@
 import * as constants from "../constants/constants";
 import { useDispatch } from "react-redux";
-import { addNowPlaying } from "../redux/slices/movieSlice";
 import { useEffect } from "react";
 
 export const useAddMovies = ({url, reducerFunction}) => {
@@ -20,5 +19,5 @@ export const useAddMovies = ({url, reducerFunction}) => {
 
   useEffect(() => {
     fetchData();
-  }, [url, reducerFunction]); // 👈 Add url and reducerFunction to the dependency array
+  }, [url, reducerFunction, fetchData]); // 👈 Add url and reducerFunction to the dependency array
 };

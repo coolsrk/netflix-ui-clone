@@ -24,7 +24,7 @@ const useFetchBackGroundVideo = (movieId) => {
 
     useEffect(() => {
         fetchMovieTrailer();
-    }, [movieId]);
+    }, [movieId, fetchMovieTrailer]);
 
     return { trailerKey, isVideoLoaded, setIsVideoLoaded };
 };
