@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const VideoMetadata = ({title, overview}) => {
   return (
-    <div className='absolute text-white top-72 ml-24 w-1/4 bg-transparent z-10'>
+    <div className='absolute text-white top-72 ml-24 w-1/2 bg-transparent z-10'>
       <h1 className='text-4xl mb-5 font-semibold'>{title}</h1>
       <p className='font-semibold'>{overview}</p>
 
@@ -13,7 +13,7 @@ const VideoMetadata = ({title, overview}) => {
           <span>Play</span>
         </button>
         <button className='bg-gray-400 w-32 h-10 m-3 flex items-center justify-center gap-2 rounded-md'>
-          <FontAwesomeIcon icon="fa-info" style={{ color: 'white'}} size="1rem" />
+          <FontAwesomeIcon icon="fa-info" style={{ color: 'white'}} size="2x" />
           <span>More Info</span>
         </button>
       </div>

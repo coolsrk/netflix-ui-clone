@@ -8,12 +8,12 @@ const VideoBackGround = ({ movieId }) => {
     <div className="relative h-screen w-screen overflow-hidden">
       {!isVideoLoaded && (
         <div
-          className="absolute top-0 left-0 w-full h-full bg-black"
+          className="top-0 left-0 w-full h-full"
           style={{ zIndex: 1 }}
         />
       )}
       <iframe
-        className={`absolute top-0 left-0 ${!isVideoLoaded ? "hidden" : ""}`}
+        className={`top-0 left-0 ${!isVideoLoaded ? "hidden" : ""}`}
         src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&playsinline=1&fs=0&loop=1&playlist=${trailerKey}`}
         allow="autoplay; encrypted-media"
         allowFullScreen
