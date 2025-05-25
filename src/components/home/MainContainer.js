@@ -7,7 +7,9 @@ const MainContainer = () => {
   const movies = useSelector((state) => state.movies?.nowPlaying);
   if (movies === null) return;
 
-  const movieToPlay = movies[0];
+  const index = Math.floor(Math.random() * movies.length);
+
+  const movieToPlay = movies[index];
   console.log(movieToPlay);
 
   const { original_title, overview } = movieToPlay;

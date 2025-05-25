@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/initialise";
 import { signOut } from "firebase/auth";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../redux/slices/userSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Search from "./Search";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ const Header = () => {
       {currentUser && (          
           <div
             className="absolute m-2 p-2 right-20 top-8 text-white cursor-pointer flex items-center gap-2">
+            <Search/>
             <FontAwesomeIcon icon="circle-user" style={{ color: 'white'}} size="2x" />
             <span onClick={handleSignOut}>Sign-Out</span>
           </div>
